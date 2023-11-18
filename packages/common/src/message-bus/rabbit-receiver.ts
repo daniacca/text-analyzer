@@ -4,10 +4,11 @@ import { AsyncDisposable } from "using-statement";
 export class RabbitReceiver implements AsyncDisposable {
   private connection: Connection;
 
-  constructor(private hostname: string, private port: number) {}
+  constructor(private hostname: string, private port: number, private user?: string, private password?: string, private vhost?: string) {}
 
   async connect() {
-    this.connection = await connect(`amqp://${this.hostname}:${this.port}`);
+    const userStr = this.user && this.password ? `${this.user}:${this.password}@` : "";
+    this.connection = await connect(`amqp://${userStr}${this.hostname}:${this.port}${this.vhost ? `/${this.vhost}` : ""}`);
   }
 
   async receive(queue: string, callback: (data: string) => void) {

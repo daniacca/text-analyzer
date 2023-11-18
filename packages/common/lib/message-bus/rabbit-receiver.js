@@ -12,13 +12,17 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.RabbitReceiver = void 0;
 const amqplib_1 = require("amqplib");
 class RabbitReceiver {
-    constructor(hostname, port) {
+    constructor(hostname, port, user, password, vhost) {
         this.hostname = hostname;
         this.port = port;
+        this.user = user;
+        this.password = password;
+        this.vhost = vhost;
     }
     connect() {
         return __awaiter(this, void 0, void 0, function* () {
-            this.connection = yield (0, amqplib_1.connect)(`amqp://${this.hostname}:${this.port}`);
+            const userStr = this.user && this.password ? `${this.user}:${this.password}@` : "";
+            this.connection = yield (0, amqplib_1.connect)(`amqp://${userStr}${this.hostname}:${this.port}${this.vhost ? `/${this.vhost}` : ""}`);
         });
     }
     receive(queue, callback) {
