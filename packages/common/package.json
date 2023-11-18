@@ -14,12 +14,18 @@
     "lib"
   ],
   "scripts": {
-    "build": "tsc --build --verbose"
+    "build": "tsc --build --verbose",
+    "clean": "rimraf lib"
   },
   "publishConfig": {
     "access": "public"
   },
   "dependencies": {
-    "redis": "^4.6.10"
+    "amqplib": "^0.10.3",
+    "redis": "^4.6.10",
+    "using-statement": "^0.4.2"
+  },
+  "devDependencies": {
+    "@types/amqplib": "^0.10.4"
   }
 }

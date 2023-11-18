@@ -1,4 +1,4 @@
-import connectToRedis from "../../common/lib";
+import connectToRedis from "../../common/lib/cache";
 import { ModuleHeartbeat } from "@mangosteen/background-healthcheck";
 
 const delay = (time: number) => {

@@ -1,3 +1,4 @@
+import { createClient } from "redis";
 export default function connectToRedis(hostname: string, port: number): Promise<import("@redis/client").RedisClientType<{
     graph: {
         CONFIG_GET: typeof import("@redis/graph/dist/commands/CONFIG_GET");
@@ -288,3 +289,4 @@ export default function connectToRedis(hostname: string, port: number): Promise<
         reserve: typeof import("@redis/bloom/dist/commands/top-k/RESERVE");
     };
 } & import("redis").RedisModules, import("redis").RedisFunctions, import("redis").RedisScripts>>;
+export type RedisClient = ReturnType<typeof createClient>;
