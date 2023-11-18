@@ -7,7 +7,7 @@
     "start": "ts-node src/index.ts",
     "start:prod": "node dist/index.js",
     "build": "tsc --build --verbose",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest"
   },
   "keywords": [],
   "author": "",
@@ -16,5 +16,46 @@
     "@mangosteen/background-healthcheck": "^2.3.0",
     "@text-analyzer/common": "^0.0.0",
     "ts-node": "^10.9.1"
+  },
+  "jest": {
+    "preset": "ts-jest",
+    "testEnvironment": "node",
+    "moduleDirectories": [
+      "node_modules",
+      "src"
+    ],
+    "moduleFileExtensions": [
+      "js",
+      "ts",
+      "json"
+    ],
+    "testPathIgnorePatterns": [
+      "e2e",
+      "node_modules",
+      ".erb"
+    ],
+    "testMatch": [
+      "**/__tests__/**/*.+(ts|tsx)"
+    ],
+    "transform": {
+      "\\.(ts|tsx)$": "ts-jest"
+    },
+    "transformIgnorePatterns": [
+      "<rootDir>/node_modules/"
+    ],
+    "verbose": true,
+    "reporters": [
+      "default",
+      "jest-junit"
+    ]
+  },
+  "jest-junit": {
+    "outputDirectory": "reports",
+    "outputName": "report.xml",
+    "ancestorSeparator": " › ",
+    "uniqueOutputName": "false",
+    "suiteNameTemplate": "{filepath}",
+    "classNameTemplate": "{classname}",
+    "titleTemplate": "{title}"
   }
 }

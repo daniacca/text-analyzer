@@ -1,11 +1,14 @@
 import { createClient } from "redis";
 
-const client = createClient();
+export default async function connectToRedis(hostname: string, port: number) {
+  const client = createClient({ url: `redis://${hostname}:${port}` });
 
-client.on("error", (err) => console.log("Redis Client Error", err));
-client.on("ready", () => console.log("Redis Client Ready"));
+  client.on("error", (err) => console.log("Redis Client Error", err));
+  client.on("ready", () => console.log("Redis Client Ready"));
 
-client.connect().then(() => console.log("Redis Client Connected"));
+  await client.connect();
+  console.log("Redis Client Connected");
+  return client;
+}
 
-export type RedisClient = typeof client;
-export default client;
+export type RedisClient = ReturnType<typeof createClient>;

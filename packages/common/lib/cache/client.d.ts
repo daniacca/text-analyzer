@@ -1,4 +1,4 @@
-declare const client: import("@redis/client").RedisClientType<{
+export default function connectToRedis(hostname: string, port: number): Promise<import("@redis/client").RedisClientType<{
     graph: {
         CONFIG_GET: typeof import("@redis/graph/dist/commands/CONFIG_GET");
         configGet: typeof import("@redis/graph/dist/commands/CONFIG_GET");
@@ -287,6 +287,4 @@ declare const client: import("@redis/client").RedisClientType<{
         RESERVE: typeof import("@redis/bloom/dist/commands/top-k/RESERVE");
         reserve: typeof import("@redis/bloom/dist/commands/top-k/RESERVE");
     };
-} & import("redis").RedisModules, import("redis").RedisFunctions, import("redis").RedisScripts>;
-export type RedisClient = typeof client;
-export default client;
+} & import("redis").RedisModules, import("redis").RedisFunctions, import("redis").RedisScripts>>;

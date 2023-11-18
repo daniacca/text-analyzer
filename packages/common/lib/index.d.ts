@@ -1,2 +1,2 @@
-import client from "./cache/client";
-export default client;
+import redisConnection from "./cache/client";
+export default redisConnection;

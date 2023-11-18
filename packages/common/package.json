@@ -14,8 +14,7 @@
     "lib"
   ],
   "scripts": {
-    "build": "tsc --build --verbose",
-    "test": "node ./__tests__/common.test.js"
+    "build": "tsc --build --verbose"
   },
   "publishConfig": {
     "access": "public"

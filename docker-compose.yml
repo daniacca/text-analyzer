@@ -1,0 +1,68 @@
+version: "3.8"
+
+services:
+  worker:
+    build:
+      context: ./
+      dockerfile: ./packages/worker/Dockerfile
+    restart: unless-stopped
+    stdin_open: true
+    tty: true
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - backend
+
+  redis:
+    image: redis:alpine
+    restart: unless-stopped
+    container_name: redis
+    hostname: "redis.io"
+    healthcheck:
+      test: ["CMD-SHELL", "redis-cli ping | grep PONG"]
+      interval: 1s
+      timeout: 3s
+      retries: 5
+    ports:
+      - "6379:6379"
+    networks:
+      - backend
+
+  redis-commander:
+    image: rediscommander/redis-commander:latest
+    container_name: redis-commander
+    hostname: "redis-commander.io"
+    depends_on:
+      - redis
+    environment:
+      - REDIS_HOSTS=local:redis:6379
+    ports:
+      - "8081:8081"
+    networks:
+      - backend
+
+  rabbitmq:
+    image: rabbitmq:3-management-alpine
+    container_name: rabbitmq
+    restart: unless-stopped
+    hostname: "rabbit-mq.io"
+    ports:
+      - "15672:15672"
+      - "5672:5672"
+    healthcheck:
+      test: nc -z rabbitmq 5672
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    environment:
+      - RABBITMQ_DEFAULT_VHOST=USER_HOST
+      - RABBITMQ_DEFAULT_USER=guest
+      - RABBITMQ_DEFAULT_PASS=guest
+    networks:
+      - backend
+
+networks:
+  backend: {}
