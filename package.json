@@ -5,6 +5,7 @@
     "packages/*"
   ],
   "scripts": {
+    "start:client": "npm run start -w packages/client",
     "test": "lerna run test --stream"
   },
   "devDependencies": {

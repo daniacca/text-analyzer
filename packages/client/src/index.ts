@@ -9,9 +9,7 @@ const { delay } = utils;
 const rabbitHost = "localhost";
 const redisHost = "localhost";
 
-console.log("***************************");
-console.log("* The Mighty Word Counter *");
-console.log("***************************");
+console.log("The Mighty Word Counter");
 
 process.on("SIGINT", () => {
   process.exit(0);

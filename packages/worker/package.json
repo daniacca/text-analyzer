@@ -32,7 +32,8 @@
     "testPathIgnorePatterns": [
       "e2e",
       "node_modules",
-      ".erb"
+      ".erb",
+      "dist"
     ],
     "testMatch": [
       "**/__tests__/**/*.+(ts|tsx)"
