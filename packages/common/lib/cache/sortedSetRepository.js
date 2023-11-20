@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.SortedSetRepository = void 0;
+exports.SortedSetRepositoryFactory = exports.SortedSetRepository = void 0;
 class SortedSetRepository {
     constructor(client, setKey) {
         this.client = client;
@@ -50,6 +50,18 @@ class SortedSetRepository {
             return yield this.client.zRange(this.setKey, start, stop);
         });
     }
+    rangeByScore(min, max) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield this.client.zRangeByScoreWithScores(this.setKey, min, max);
+        });
+    }
+    scan(pattern = "*", cursor = 0, count = 30) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield this.client.zScan(this.setKey, cursor, { MATCH: pattern, COUNT: count });
+        });
+    }
 }
 exports.SortedSetRepository = SortedSetRepository;
+const SortedSetRepositoryFactory = (client) => (setKey) => new SortedSetRepository(client, setKey);
+exports.SortedSetRepositoryFactory = SortedSetRepositoryFactory;
 //# sourceMappingURL=sortedSetRepository.js.map

@@ -1,11 +1,12 @@
-import connectToRedis from "../../common/lib/cache";
+import connectToRedis, { SortedSetRepositoryFactory } from "../../common/lib/cache";
 import utils from "../../common/lib/utils";
 import { ModuleHeartbeat } from "@mangosteen/background-healthcheck";
 import rabbit from "../../common/lib/message-bus";
 import { using } from "using-statement";
-import { analyzeText } from "./text-analyzer";
+import analyzer, { analyzeText } from "./text-analyzer";
 
 const { delay } = utils;
+const { getWords } = analyzer;
 
 process.on("SIGINT", () => {
   console.log("Stopping worker...");
@@ -16,10 +17,13 @@ const appModule = new ModuleHeartbeat("app", 2000);
 
 const rabbitHost = "rabbit-mq.io";
 const redisHost = "redis.io";
+const wordSetKey = "word:set";
 
 async function main() {
   using(new rabbit.RabbitReceiver(rabbitHost, 5672, "guest", "guest", "USER_HOST"), async (receiver) => {
     const client = await connectToRedis(redisHost, 6379);
+    const wordSetRepository = SortedSetRepositoryFactory(client)(wordSetKey);
+
     await receiver.connect();
     const checkRedis = () => {
       return client.isOpen && client.isReady;
@@ -35,6 +39,7 @@ async function main() {
       await client.set("letters", 0);
       await client.set("words", 0);
       await client.set("spaces", 0);
+      await client.del(wordSetKey);
     };
 
     initCounter();
@@ -54,6 +59,10 @@ async function main() {
       await client.incrBy("letters", letters);
       await client.incrBy("spaces", spaces);
       await client.incrBy("words", words);
+      const wordsArray = getWords(data);
+      for (const word of wordsArray) {
+        await wordSetRepository.increment(word);
+      }
     });
 
     for (;;) {

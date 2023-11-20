@@ -1,5 +1,5 @@
 import redisConnection, { RedisClient } from "./client";
-import { SortedSetRepository } from "./sortedSetRepository";
+import { SortedSetRepository, SortedSetRepositoryFactory } from "./sortedSetRepository";
 
-export { RedisClient, SortedSetRepository };
+export { RedisClient, SortedSetRepository, SortedSetRepositoryFactory };
 export default redisConnection;

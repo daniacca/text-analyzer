@@ -1,5 +1,5 @@
 import { countLetters } from "./countLetters";
-import { countWords } from "./countWords";
+import { countWords, getWords } from "./countWords";
 import { countSpaces } from "./countSpaces";
 
 export function analyzeText(text: string) {
@@ -10,4 +10,4 @@ export function analyzeText(text: string) {
   };
 }
 
-export default { countLetters, countWords, countSpaces };
+export default { countLetters, countWords, countSpaces, getWords };

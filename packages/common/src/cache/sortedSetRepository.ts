@@ -70,4 +70,29 @@ export class SortedSetRepository {
   async range(start: number, stop: number) {
     return await this.client.zRange(this.setKey, start, stop);
   }
+
+  /**
+   * Returns all the elements in the sorted set at key with a score between min and max,
+   * including elements with score equal to min or max.
+   * The elements are considered to be ordered from low to high scores.
+   * @param min min score to be included
+   * @param max max score to be included
+   * @returns an array of value with each score
+   */
+  async rangeByScore(min: number, max: number) {
+    return await this.client.zRangeByScoreWithScores(this.setKey, min, max);
+  }
+
+  /**
+   * incrementally iterate over the sorted set elements
+   * @param pattern the pattern to be matched (default: '*')
+   * @param cursor the actual cursor that keep track of the iteration (0 to start a new one)
+   * @param count the number of elements to be returned per iteration (default: 30)
+   * @returns an array of elements with each score and the new cursor
+   */
+  async scan(pattern: string = "*", cursor: number = 0, count: number = 30) {
+    return await this.client.zScan(this.setKey, cursor, { MATCH: pattern, COUNT: count });
+  }
 }
+
+export const SortedSetRepositoryFactory = (client: RedisClient) => (setKey: string) => new SortedSetRepository(client, setKey);

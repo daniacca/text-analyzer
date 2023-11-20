@@ -13,4 +13,16 @@ export declare class SortedSetRepository {
     score(value: string): Promise<number>;
     count(): Promise<number>;
     range(start: number, stop: number): Promise<string[]>;
+    rangeByScore(min: number, max: number): Promise<{
+        score: number;
+        value: string;
+    }[]>;
+    scan(pattern?: string, cursor?: number, count?: number): Promise<{
+        cursor: number;
+        members: {
+            score: number;
+            value: string;
+        }[];
+    }>;
 }
+export declare const SortedSetRepositoryFactory: (client: RedisClient) => (setKey: string) => SortedSetRepository;

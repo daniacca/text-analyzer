@@ -1,6 +1,6 @@
 import rabbit from "../../common/lib/message-bus";
 import utils from "../../common/lib/utils";
-import connectToRedis from "../../common/lib/cache";
+import connectToRedis, { SortedSetRepositoryFactory } from "../../common/lib/cache";
 import { using } from "using-statement";
 import dataLoader from "./data-loader";
 
@@ -14,7 +14,7 @@ console.log("* The Mighty Word Counter *");
 console.log("***************************");
 
 process.on("SIGINT", () => {
-  process.exit();
+  process.exit(0);
 });
 
 if (process.argv.length < 3) {
@@ -30,6 +30,7 @@ async function main() {
     await sender.connect();
     console.log("RabbitMQ Connected");
     const client = await connectToRedis(redisHost, 6379);
+    const wordSetRepository = SortedSetRepositoryFactory(client)("word:set");
 
     await sender.send("test-queue", "PROCESS:SENDER:START");
 
@@ -59,12 +60,16 @@ async function main() {
     const letters = await client.get("letters");
     const words = await client.get("words");
     const spaces = await client.get("spaces");
+    const wordSet = await wordSetRepository.rangeByScore(10, Infinity);
 
     console.log("Word Counter finished!");
     console.log("Results:");
     console.log("Letters:", letters);
     console.log("Words:", words);
     console.log("Spaces:", spaces);
+    console.log("Words with more than 10 occurrences:");
+    console.log(JSON.stringify(wordSet, null, 2));
+    console.log("Press ctrl+c to exit.");
   });
 }
 
