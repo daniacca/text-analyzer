@@ -3,6 +3,7 @@ import utils from "../../common/lib/utils";
 import { ModuleHeartbeat } from "@mangosteen/background-healthcheck";
 import rabbit from "../../common/lib/message-bus";
 import { using } from "using-statement";
+import { analyzeText } from "./text-analyzer";
 
 const { delay } = utils;
 
@@ -29,16 +30,36 @@ async function main() {
       process.exit();
     }
 
+    const initCounter = async () => {
+      await client.set("worker:done", 0);
+      await client.set("letters", 0);
+      await client.set("words", 0);
+      await client.set("spaces", 0);
+    };
+
+    initCounter();
     await receiver.receive("test-queue", async (data) => {
+      if (data === "PROCESS:SENDER:START") {
+        await initCounter();
+        return;
+      }
+
+      if (data === "PROCESS:SENDER:DONE") {
+        await client.set("worker:done", 1);
+        return;
+      }
+
       console.log("Received message:", data);
+      const { letters, spaces, words } = analyzeText(data);
+      await client.incrBy("letters", letters);
+      await client.incrBy("spaces", spaces);
+      await client.incrBy("words", words);
     });
 
-    await client.set("worker:heartbeat", 0);
     for (;;) {
       await delay(2000);
       console.log("The mighty worker is alive...");
       await appModule.signal();
-      await client.incr("worker:heartbeat");
     }
   });
 }

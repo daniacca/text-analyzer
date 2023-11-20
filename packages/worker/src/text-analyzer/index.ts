@@ -1,6 +1,6 @@
-import { countLetters } from "./countLetters.js";
-import { countWords } from "./countWords.js";
-import { countSpaces } from "./countSpaces.js";
+import { countLetters } from "./countLetters";
+import { countWords } from "./countWords";
+import { countSpaces } from "./countSpaces";
 
 export function analyzeText(text: string) {
   return {
