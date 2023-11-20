@@ -23,18 +23,19 @@ class RabbitSender {
         return __awaiter(this, void 0, void 0, function* () {
             const userStr = this.user && this.password ? `${this.user}:${this.password}@` : "";
             this.connection = yield (0, amqplib_1.connect)(`amqp://${userStr}${this.hostname}:${this.port}${this.vhost ? `/${this.vhost}` : ""}`);
+            this.channel = yield this.connection.createChannel();
         });
     }
     send(queue, message) {
         return __awaiter(this, void 0, void 0, function* () {
-            const channel = yield this.connection.createChannel();
-            yield channel.assertQueue(queue);
-            channel.sendToQueue(queue, Buffer.from(message));
-            yield channel.close();
+            yield this.channel.assertQueue(queue);
+            this.channel.sendToQueue(queue, Buffer.from(message));
         });
     }
     close() {
         return __awaiter(this, void 0, void 0, function* () {
+            if (this.channel)
+                yield this.channel.close();
             if (this.connection)
                 yield this.connection.close();
         });

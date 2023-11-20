@@ -1,0 +1,3 @@
+Ciao, sono un file di testo.
+Questa è la seconda riga.
+E questa la terza.

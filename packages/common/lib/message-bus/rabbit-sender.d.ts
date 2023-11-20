@@ -6,6 +6,7 @@ export declare class RabbitSender implements AsyncDisposable {
     private password?;
     private vhost?;
     private connection;
+    private channel;
     constructor(hostname: string, port: number, user?: string, password?: string, vhost?: string);
     connect(): Promise<void>;
     send(queue: string, message: string): Promise<void>;

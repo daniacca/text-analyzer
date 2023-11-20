@@ -1,11 +1,10 @@
 import connectToRedis from "../../common/lib/cache";
+import utils from "../../common/lib/utils";
 import { ModuleHeartbeat } from "@mangosteen/background-healthcheck";
 import rabbit from "../../common/lib/message-bus";
 import { using } from "using-statement";
 
-const delay = (time: number) => {
-  return new Promise((resolve) => setTimeout(resolve, time));
-};
+const { delay } = utils;
 
 process.on("SIGINT", () => {
   console.log("Stopping worker...");
