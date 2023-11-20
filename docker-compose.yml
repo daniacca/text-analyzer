@@ -2,6 +2,7 @@ version: "3.8"
 
 services:
   worker:
+    container_name: worker
     build:
       context: ./
       dockerfile: ./packages/worker/Dockerfile
