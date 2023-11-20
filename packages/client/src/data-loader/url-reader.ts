@@ -1,9 +1,10 @@
 import http from "http";
 import https from "https";
+import extractor from "unfluff";
 
 type GeneralHttpClient = typeof http | typeof https;
 
-const getScript = (url: string, onDataCallback: (chunk: string) => void) => {
+const getScript = (url: string) => {
   return new Promise((resolve, reject) => {
     let client: GeneralHttpClient = http;
 
@@ -11,11 +12,14 @@ const getScript = (url: string, onDataCallback: (chunk: string) => void) => {
       client = https;
     }
 
+    let chunks = "";
     client
       .get(url, (resp) => {
-        resp.on("data", onDataCallback);
+        resp.on("data", (chunk) => {
+          chunks += chunk;
+        });
         resp.on("end", () => {
-          resolve(true);
+          resolve(chunks);
         });
       })
       .on("error", (err) => {
@@ -24,6 +28,9 @@ const getScript = (url: string, onDataCallback: (chunk: string) => void) => {
   });
 };
 
-export async function urlLoader(url: string, onDataCallback: (chunk: string) => void) {
-  await getScript(url, onDataCallback);
+export async function urlLoader(url: string, onDataCallback: (chunk: string) => void, closeCallback: () => void) {
+  const htmlPage = await getScript(url);
+  const data = extractor(htmlPage);
+  onDataCallback(data.text);
+  closeCallback();
 }

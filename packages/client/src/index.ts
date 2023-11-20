@@ -36,7 +36,6 @@ async function main() {
     dataLoader(
       input,
       async (line) => {
-        console.log("Sending:", line);
         await sender.send("test-queue", line);
       },
       async () => {

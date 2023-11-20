@@ -19,7 +19,7 @@ async function isTxtFile(filePath: string) {
 
 export async function dataLoader(input: string, onDataCallback: (line: string) => void, closeCallback: () => void) {
   if (isValidUrl(input)) {
-    await urlLoader(input, onDataCallback);
+    await urlLoader(input, onDataCallback, closeCallback);
   } else if (await isTxtFile(input)) {
     fileLoader(input, onDataCallback, closeCallback);
   } else {
